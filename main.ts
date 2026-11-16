@@ -1,18 +1,12 @@
-// ai-excited-01 — writes the entry image to the output directory.
-//
-// The image itself (a colossal bioluminescent octopus rising from a
-// flooded city square at dusk, tiny people below) is the entry; this
-// program simply places it where the harness expects it.
-import { copyFileSync, mkdirSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
-const here = dirname(fileURLToPath(import.meta.url));
-const outDir = resolve(process.env.MAKEFUN_OUTPUT_DIR ?? "/output");
-
-// The single image file this entry is built around.
+// The entry is a single pre-made image: this program only places a copy
+// of it in the output directory, so every run produces the same bytes.
 const IMAGE_FILE = "entry.png";
 
-mkdirSync(outDir, { recursive: true });
-copyFileSync(join(here, IMAGE_FILE), join(outDir, IMAGE_FILE));
-console.log(`Wrote entry.png to ${outDir}`);
+const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
+const here = path.dirname(new URL(import.meta.url).pathname);
+
+fs.mkdirSync(outDir, { recursive: true });
+fs.copyFileSync(path.join(here, IMAGE_FILE), path.join(outDir, IMAGE_FILE));
